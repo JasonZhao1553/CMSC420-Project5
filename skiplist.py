@@ -95,11 +95,12 @@ class SkipList():
     # Check if we need to rebuild and do so if needed.
     def insert(self,key,value,toplevel):
         #print(key)
+        self.nodecount = 0
         new_pointers = [self.tailnode] * (1 + toplevel)
         new_node = Node(key, value, toplevel, new_pointers)
         for level in range(toplevel + 1):
             self.insert_into_level(level, new_node)
-        #self.nodecount += 1
+        self.nodecount += 1
         return
     
     def insert_into_level(self, level, new_node):
@@ -123,6 +124,7 @@ class SkipList():
     def delete(self,key):
         for level, pointer in enumerate(self.headnode.pointers):
             self.delete_from_level(level, key)
+        self.nodecount -= 1
     
     def delete_from_level(self, level, key):
         head = self.headnode
@@ -136,10 +138,26 @@ class SkipList():
             else:
                 #prev = head
                 head = next_node
+    
+    def search_level(self, key, level):
+        head = self.headnode
+        keys = []
+        while head.pointers[level]:
+            keys.append(head.key)
+            if head.key == key:
+                keys.append(head.value)
+                return keys
+            else:
+                head = head.pointers[level]
+        return []
 
     # Search for the given key.
     # Construct a list of all the keys in all the nodes visited during the search.
     # Append the value associated to the given key to this list.
     def search(self,key) -> str:
-        A = ['your list gets constructed here']
+        A = []
+        for level in reversed(range(self.maxlevel + 1)):
+            A = self.search_level(key, level)
+            if len(A) > 0:
+                break
         return json.dumps(A,indent = 2)
