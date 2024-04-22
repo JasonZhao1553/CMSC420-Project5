@@ -94,7 +94,7 @@ class SkipList():
     # The key is guaranteed to not be in the skiplist.
     # Check if we need to rebuild and do so if needed.
     def insert(self,key,value,toplevel):
-        print(key)
+        #print(key)
         new_pointers = [self.tailnode] * (1 + self.maxlevel)
         new_node = Node(key, value, toplevel, new_pointers)
         for level in range(toplevel + 1):
@@ -103,7 +103,7 @@ class SkipList():
         return
     
     def insert_into_level(self, level, new_node):
-        print("Level:", level)
+        #print("Level:", level)
         head = self.headnode
         prev = None
         old_head = head
