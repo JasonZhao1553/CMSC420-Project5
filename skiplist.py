@@ -125,7 +125,21 @@ class SkipList():
             self.delete_from_level(level, key)
     
     def delete_from_level(self, level, key):
-        return
+        head = self.headnode
+        prev = None
+
+        while head.pointers[level]:
+            next_node = head.pointers[level]
+            if next_node.key == key:
+                if prev == None:
+                    prev = head
+                prev.pointers[level] = next_node.pointers[level]
+                return
+            else:
+                prev = head
+                head = next_node
+
+
 
     # Search for the given key.
     # Construct a list of all the keys in all the nodes visited during the search.
