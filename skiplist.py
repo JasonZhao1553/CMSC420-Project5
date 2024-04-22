@@ -94,12 +94,38 @@ class SkipList():
     # The key is guaranteed to not be in the skiplist.
     # Check if we need to rebuild and do so if needed.
     def insert(self,key,value,toplevel):
-        print('Placeholder')
+        print(key)
+        new_pointers = [self.tailnode] * (1 + self.maxlevel)
+        new_node = Node(key, value, toplevel, new_pointers)
+        for level in range(toplevel + 1):
+            self.insert_into_level(level, new_node)
+        #self.nodecount += 1
+        return
+    
+    def insert_into_level(self, level, new_node):
+        print("Level:", level)
+        head = self.headnode
+        prev = None
+        old_head = head
+        
+        while head:
+            next_node = head.pointers[level]
+            if next_node.key > new_node.key:
+                head.pointers[level] = new_node
+                new_node.pointers[level] = next_node
+                return
+            else:
+                head = next_node
+        return
 
     # Delete node with the given key.
     # The key is guaranteed to be in the skiplist.
     def delete(self,key):
-        print('Placeholder')
+        for level, pointer in enumerate(self.headnode.pointers):
+            self.delete_from_level(level, key)
+    
+    def delete_from_level(self, level, key):
+        return
 
     # Search for the given key.
     # Construct a list of all the keys in all the nodes visited during the search.
