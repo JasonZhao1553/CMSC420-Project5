@@ -95,7 +95,7 @@ class SkipList():
     # Check if we need to rebuild and do so if needed.
     def insert(self,key,value,toplevel):
         #print(key)
-        new_pointers = [self.tailnode] * (1 + self.maxlevel)
+        new_pointers = [self.tailnode] * (1 + toplevel)
         new_node = Node(key, value, toplevel, new_pointers)
         for level in range(toplevel + 1):
             self.insert_into_level(level, new_node)
