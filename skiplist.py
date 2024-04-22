@@ -131,15 +131,11 @@ class SkipList():
         while head.pointers[level]:
             next_node = head.pointers[level]
             if next_node.key == key:
-                if prev == None:
-                    prev = head
-                prev.pointers[level] = next_node.pointers[level]
+                head.pointers[level] = next_node.pointers[level]
                 return
             else:
-                prev = head
+                #prev = head
                 head = next_node
-
-
 
     # Search for the given key.
     # Construct a list of all the keys in all the nodes visited during the search.
