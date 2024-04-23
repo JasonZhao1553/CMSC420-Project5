@@ -178,26 +178,21 @@ class SkipList():
             else:
                 #prev = head
                 head = next_node
-    
-    def search_level(self, key, level):
-        head = self.headnode
-        keys = []
-        while head.pointers[level]:
-            keys.append(head.key)
-            if head.key == key:
-                keys.append(head.value)
-                return keys
-            else:
-                head = head.pointers[level]
-        return []
+
 
     # Search for the given key.
     # Construct a list of all the keys in all the nodes visited during the search.
     # Append the value associated to the given key to this list.
     def search(self,key) -> str:
         A = []
-        for level in reversed(range(self.maxlevel + 1)):
-            A = self.search_level(key, level)
-            if len(A) > 0:
-                break
+        curr = self.headnode
+        while curr.key != key:
+            for level in reversed(range(len(curr.pointers))):
+                next_node_at_level = curr.pointers[level]
+                if next_node_at_level.key <= key:
+                    A.append(curr.key)
+                    curr = next_node_at_level
+        
+        A.append(curr.key)
+        A.append(curr.value)
         return json.dumps(A,indent = 2)
