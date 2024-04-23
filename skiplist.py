@@ -89,19 +89,59 @@ class SkipList():
         self.headnode = headnode
         self.tailnode = tailnode
         self.maxlevel = maxlevel
+        self.nodecount = 0
 
     # Create and insert a node with the given key, value, and toplevel.
     # The key is guaranteed to not be in the skiplist.
     # Check if we need to rebuild and do so if needed.
+    def expected_top_level(self):
+        return 1 + math.log(self.nodecount, 2)
+    
     def insert(self,key,value,toplevel):
         #print(key)
-        self.nodecount = 0
         new_pointers = [self.tailnode] * (1 + toplevel)
         new_node = Node(key, value, toplevel, new_pointers)
         for level in range(toplevel + 1):
             self.insert_into_level(level, new_node)
         self.nodecount += 1
+
+        # rebuild checking
+        expected_top_level = self.expected_top_level()
+        if expected_top_level > self.maxlevel:
+            self.rebuild()
+
+        # TODO implement rebuild checking and execution
         return
+    
+    def rebuild(self):
+        data = self.get_node_key_values()
+        old_maxlevel = self.maxlevel
+
+        self.initialize(old_maxlevel * 2)
+        #self.maxlevel = old_maxlevel * 2
+
+        eligibal_indices = list(range(1, len(data) + 1))
+        for level in reversed(range(self.maxlevel + 1)):
+            stored_nodes = []
+            for idx in eligibal_indices:
+                if (idx % (2 ** level)) == 0:
+                    key, value = data[idx - 1]
+                    self.insert(key, value, level)
+                else:
+                    stored_nodes.append(idx)
+            eligibal_indices = stored_nodes
+            if len(eligibal_indices) == 0:
+                return
+
+    def get_node_key_values(self):
+        data = []
+        head = self.headnode
+        while head:
+            data.append((head.key, head.value))
+            head = head.pointers[0]
+        
+        return data[1:-1]
+
     
     def insert_into_level(self, level, new_node):
         #print("Level:", level)
