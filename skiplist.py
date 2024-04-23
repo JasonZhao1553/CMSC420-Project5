@@ -192,6 +192,7 @@ class SkipList():
                 if next_node_at_level.key <= key:
                     A.append(curr.key)
                     curr = next_node_at_level
+                    break
         
         A.append(curr.key)
         A.append(curr.value)
